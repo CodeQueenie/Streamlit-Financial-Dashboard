@@ -4,6 +4,30 @@ streamlit_app/
 venv/
 .env
 
+# Copilot Chat Logging folders and files
+copilot_logging/
+copilot_logging.log 
+
+# Copilot Chat Logging - Complete Protection
+copilot_logging/
+copilot_logging.log
+*.log
+exports/
+reports/
+chat_history/
+workspace-chunks.json
+commandEmbeddings.json
+settingEmbeddings.json
+*copilot*.log
+*copilot*.json
+*github-copilot*/
+*GitHub.copilot*/
+
+# Ensure no VSCode Copilot data is committed
+.vscode/**/GitHub.copilot*
+.vscode/copilot/
+.vscode/**/copilot*/
+
 # Python cache
 __pycache__/
 *.pyc
@@ -11,6 +35,15 @@ __pycache__/
 
 # Jupyter notebooks & checkpoints
 .ipynb_checkpoints/
+
+# yahoo_fin package files - comprehensive exclusion
+/yahoo_fin-master/
+/yahoo_fin-master/*
+/yahoo_fin/
+/yahoo_fin/*
+yahoo_fin-master.zip
+*yahoo_fin*
+*yahoo-fin*
 
 # VS Code settings
 .vscode/
