@@ -15,10 +15,15 @@ from plotly.subplots import make_subplots
 # Helper Function to Get S&P 500 Tickers
 #==============================================================================
 
-def 
-():
+def get_sp500_tickers():
     """Fetches the latest S&P 500 ticker symbols from Wikipedia."""
     url = "https://en.wikipedia.org/wiki/List_of_S%26P_500_companies"
     table = pd.read_html(url)[0]  # Extract first table
     return table['Symbol'].tolist()
 
+
+get_sp500_tickers()
+
+# url = "https://en.wikipedia.org/wiki/List_of_S%26P_500_companies"
+# table = pd.read_html(url)[0]  # Extract first table
+# table['Symbol'].tolist()

@@ -94,6 +94,7 @@ def tab1():
             # 💰 Display Key Financial Metrics
             st.subheader("💰 Key Financial Metrics")
             st.markdown(f"""
+                - **Market Cap:** ${summary.get('marketCap', 'N/A'):,}  
                 - **52-Week Range:** <span style='font-size:16px; font-weight:bold;'>{summary.get('fiftyTwoWeekLow', 'N/A')} - {summary.get('fiftyTwoWeekHigh', 'N/A')}</span>  
                 - **Revenue:** ${summary.get('totalRevenue', 'N/A'):,}  
                 - **Net Income:** ${summary.get('netIncomeToCommon', 'N/A'):,}  
@@ -185,112 +186,20 @@ def tab1():
 
 def tab2():
     """
-    Displays stock price charts using mplfinance:
-    1️⃣ **Line Chart** → Simple closing price trend.
-    2️⃣ **Candlestick Chart** → Open-High-Low-Close (OHLC).
+    Displays stock price charts using mplfinance
     """
-
     st.title("📈 Stock Price Chart")
 
     if ticker == "-":
         st.warning("⚠️ Please select a valid stock ticker.")
         return
 
-    st.write(f"🔹 **Stock Selected:** {ticker}")
-
     # UI Inputs
     start_date = st.date_input("📅 Start Date", datetime.today().date() - timedelta(days=30))
     end_date = st.date_input("📅 End Date", datetime.today().date())
     chart_type = st.radio("📊 Choose Chart Type:", ["Line Chart", "Candlestick Chart"])
 
-    # Convert dates for Yahoo Finance
-    start_date = start_date.strftime('%Y-%m-%d')
-    end_date = end_date.strftime('%Y-%m-%d')
-
-    @st.cache_data
-    def get_stock_data(ticker, start_date, end_date):
-        """Fetches stock data from Yahoo Finance."""
-        try:
-            df = yf.download(ticker, start=start_date, end=end_date, interval="1d")
-            if df.empty:
-                return None
-            df.reset_index(inplace=True)
-
-            # ✅ Flatten MultiIndex Columns
-            if isinstance(df.columns, pd.MultiIndex):
-                df.columns = ['_'.join(col).strip() if isinstance(col, tuple) else col for col in df.columns]
-
-            # ✅ Rename Columns to Standard Names (Remove Ticker Prefix)
-            rename_map = {col: col.split('_')[0] for col in df.columns}
-            df.rename(columns=rename_map, inplace=True)
-
-            # ✅ Convert Date Column to DatetimeIndex
-            df["Date"] = pd.to_datetime(df["Date"])
-            df.set_index("Date", inplace=True)
-
-            return df
-        except Exception as e:
-            return None
-
-    # Fetch stock data
-    stock_data = get_stock_data(ticker, start_date, end_date)
-
-    # ✅ **Simple Data Validation**
-    if stock_data is None or stock_data.empty:
-        st.error("❌ Unable to fetch stock data. Please try again.")
-        return
-
-    # ✅ Debugging: Show column names in case of issues
-    st.write("📌 Debugging: Dataframe Columns")
-    st.write(stock_data.columns.tolist())  # Show available columns
-
-    # ✅ Check if required columns exist
-    required_cols = ["Open", "High", "Low", "Close", "Volume"]
-    missing_cols = [col for col in required_cols if col not in stock_data.columns]
-
-    if missing_cols:
-        st.error(f"⚠️ Missing columns in stock data: {missing_cols}")
-        return
-
-    # ✅ Ensure all financial columns are numeric & drop NaN rows
-    stock_data[required_cols] = stock_data[required_cols].apply(pd.to_numeric, errors="coerce")
-    stock_data.dropna(subset=required_cols, inplace=True)
-
-    # ✅ Display Basic Stock Info
-    latest_date = stock_data.index[-1].strftime('%Y-%m-%d')
-    latest_close = stock_data["Close"].iloc[-1]
-
-    st.subheader("📊 Stock Overview")
-    st.write(f"**Closing Price on {latest_date}:** ${latest_close:,.2f}")  
-
-    # ✅ **mplfinance Chart**
-    if chart_type == "Line Chart":
-        fig = mpf.figure(figsize=(10, 8))
-        ax1 = fig.add_subplot(2, 1, 1)  # Price plot
-        ax2 = fig.add_subplot(2, 1, 2)  # Volume plot
-        
-        mpf.plot(stock_data, type='line', ax=ax1, volume=ax2, 
-                style='charles', 
-                volume_panel=1,
-                panel_ratios=(2, 1),
-                figsize=(10, 8),
-                title=f'\n{ticker} Stock Price and Volume',
-                tight_layout=True)
-    else:  # Candlestick Chart
-        fig = mpf.figure(figsize=(10, 8))
-        ax1 = fig.add_subplot(2, 1, 1)  # Price plot
-        ax2 = fig.add_subplot(2, 1, 2)  # Volume plot
-        
-        mpf.plot(stock_data, type='candle', ax=ax1, volume=ax2,
-                style='charles',
-                volume_panel=1,
-                panel_ratios=(2, 1),
-                figsize=(10, 8),
-                title=f'\n{ticker} Stock Price and Volume',
-                tight_layout=True)
-
-    # Display Plot using st.pyplot()
-    st.pyplot(fig)
+    display_chart(ticker, start_date.strftime('%Y-%m-%d'), end_date.strftime('%Y-%m-%d'), chart_type)
 
 #==============================================================================
 # Tab 3 Statistics

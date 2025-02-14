@@ -1,0 +1,20 @@
+Summary page:
+    Ensure consistent font and boldness on all numbers.
+    Inspect all charts are properly aligned.
+    Meticulous formatting.
+
+Chart page:
+    Fix errors.
+    Chart not displaying correctly.
+    Fix this line: "Set duration to '-' to select date range". Explain further for user usability.
+
+Statistics page:
+    Fix formatting.
+    What does this page offer? what is this and explain for user understanding: "Valuation Measures"
+    Fix errors.
+
+
+
+
+Note:
+    When changing ticker in different page it will replace the already chosen ticker in the "Summary" page as well. Whatever ticker is chosen in "Summary" will be the default ticker throughout other pages. Do we want this or change? Should it be the same ticker from summary or ability to reset with different ticker in each page?
